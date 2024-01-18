@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SomeFSquares</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      justify-content: center;
+      align-items: center;
+
+      text-align: center;
+    }
+
+    #grid{
+        display:inline-block
+    }
+    #grid-container {
+      display: grid;
+      grid-template-columns: repeat(19, 36px);
+      grid-template-rows: repeat(19, 36px);
+      gap: 1px;
+      border: 1px solid #000;
+      grid-auto-flow: column;
+    }
+
+    .cell {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .target{
+        color: rgb(169, 0, 141);
+    }
+
+    .label {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      border: 1px solid #000;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+    }
+    
+    .nonZero{
+        background:rgb(150, 216, 194);
+    }
+  </style>
+</head>
+<body>
+  <h1>SomeFSquares</h1>
+  <label for="fillMode">Fill Mode </label>
+  <input id = "fillMode" type="checkbox">
+  <label for="fillNum">Fill Value </label>
+  <input id = "fillNum" type="number"><br> 
+  <div id = "grid">
+    <div id="grid-container"></div>
+  </div>
+
+  <script>
+    let fillVal = 0;
+    let fill = false;
+
+    const fillModeCheckbox = document.getElementById('fillMode');
+    const fillNumInput = document.getElementById('fillNum');
+
+    // Event listener for the Fill Mode checkbox
+    fillModeCheckbox.addEventListener('change', function() {
+        fill = this.checked;
+        console.log('Fill Mode:', fill);
+    });
+
+    // Event listener for the Fill Value number input
+    fillNumInput.addEventListener('input', function() {
+        fillVal = parseInt(this.value) || 0;
+        console.log('Fill Value:', fillVal);
+    });
+    const gridSize = 17;
+    const gridContainer = document.getElementById('grid-container');
+    const rowLabels = [14, 24, 24, 39, 43, '?', 22, 23, 29, 28, 34, 36, 29, 26, 26, 24, 20];
+    const colLabels = [13, 20, 22, 28, 30, 36, 35, 39, 49, 39, 39, '?', 23, 32, 23, 17, 13];
+    // Create the grid
+    for(let i = 0; i<gridSize; i++){
+        const rowLabel = document.createElement('div');
+        rowLabel.classList.add('label');
+        rowLabel.classList.add('target');
+        rowLabel.innerText = rowLabels[i];
+        rowLabel.id = `tr${i}`;
+        gridContainer.appendChild(rowLabel);
+    }
+
+    for(let i = 0; i< 2; i++){
+      const dummy = document.createElement('div');
+      dummy.classList.add('cell');
+      gridContainer.appendChild(dummy);
+    }
+
+    for(let i = 0; i < gridSize; i++){
+      const rowSumLabel = document.createElement('div');
+      rowSumLabel.classList.add('label');
+      rowSumLabel.innerText = '0';
+      rowSumLabel.id = `r${i}`;
+      gridContainer.appendChild(rowSumLabel);
+    }
+
+    for(let i = 0; i< 2; i++){
+      const dummy = document.createElement('div');
+      dummy.classList.add('cell');
+      gridContainer.appendChild(dummy);
+    }
+
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.dataset.row = j;
+        cell.dataset.col = i;
+        cell.innerText = '0';
+        cell.addEventListener('click', toggleCellValue);
+        gridContainer.appendChild(cell);
+      }
+      const colSumLabel = document.createElement('div');
+      colSumLabel.classList.add('label');
+      colSumLabel.innerText = '0';
+      colSumLabel.id = `c${i}`;
+      gridContainer.appendChild(colSumLabel);
+      //actual Values
+      const colLabel = document.createElement('div');
+      colLabel.classList.add('label');
+      colLabel.classList.add('target');
+      colLabel.innerText = colLabels[i];
+      colLabel.id = `tc${i}`;
+      gridContainer.appendChild(colLabel);
+    }
+
+    function toggleCellValue(event) {
+      event.preventDefault();
+      const cell = event.target;
+      const currentValue = parseInt(cell.innerText);
+      const newValue = fill? (currentValue===fillVal?0:fillVal) :  Math.max(currentValue + (event.shiftKey? -1 : 1),0);
+      cell.innerText = newValue;
+      if(newValue == 0){
+        cell.classList.remove("nonZero");
+      }else{
+        cell.classList.add("nonZero");
+      }
+      updateSums(cell.dataset.row, cell.dataset.col, newValue-currentValue);
+    }
+
+    function updateSums(row, col, change) {
+      // Update row sums
+      console.log(row);
+      console.log(col);
+      const rowSum = document.getElementById(`r${row}`);
+      const colSum = document.getElementById(`c${col}`);
+      const rowTgt = document.getElementById(`tr${row}`);
+      const colTgt = document.getElementById(`tc${col}`);
+      colSum.innerText = parseInt(colSum.innerText) + change;
+      rowSum.innerText = parseInt(rowSum.innerText) + change;
+      if(colTgt.innerText !== "?") colTgt.innerText = parseInt(colTgt.innerText) - change;
+      if(rowTgt.innerText !== "?") rowTgt.innerText = parseInt(rowTgt.innerText) - change;
+    }
+  </script>
+</body>
+</html>
