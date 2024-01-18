@@ -232,11 +232,6 @@
         cell.classList.add("nonZero");
       }
       updateSums(cell.dataset.row, cell.dataset.col, newValue-currentValue);
-      //Update group sum
-      const group = groups[cell.dataset.row][cell.dataset.col];
-      const groupSum = document.getElementById(`g${group}`);
-      if(currentValue&& (!newValue)) groupSum.innerText = parseInt(groupSum.innerText)-1;
-      else if ((!currentValue) && newValue) groupSum.innerText = parseInt(groupSum.innerText)+1;
     }
 
     function updateSums(row, col, change) {
@@ -250,6 +245,11 @@
       rowSum.innerText = parseInt(rowSum.innerText) + change;
       if(colTgt.innerText !== "?") colTgt.innerText = parseInt(colTgt.innerText) - change;
       if(rowTgt.innerText !== "?") rowTgt.innerText = parseInt(rowTgt.innerText) - change;
+
+      // Update group sums
+      const group = groups[row][col];
+      const groupSum = document.getElementById(`g${group}`);
+      groupSum.innerText = parseInt(groupSum.innerText)+change;
     }
   </script>
 </body>
