@@ -23,7 +23,7 @@
       grid-auto-flow: column;
     }
 
-    #group-counts{
+    #group-sums{
       display: flex;
       gap: 1px;
       border: 1px solid #000;
@@ -77,8 +77,8 @@
   <p>"Shift" + "Left Click" - Decrease by 1</p>
   <p>Fill Mode: Click on square to toggle between Fill Value and 0</p>
   <div id = "grid">
-    <h3>Region Counts</h3>
-    <div id="group-counts"></div>
+    <h3>Region Sums</h3>
+    <div id="group-sums"></div>
     <h3>Grid</h3>
     <label for="fillMode">Fill Mode </label>
     <input id = "fillMode" type="checkbox">
@@ -149,14 +149,14 @@
     });
 
     //Create Group Counts
-    const groupCounts = document.getElementById('group-counts');
+    const groupSums = document.getElementById('group-sums');
     for(let i = 0; i < 20; i++){
-      const groupCount = document.createElement('div');
-      groupCount.classList.add('label');
-      groupCount.style.background = colors[i];
-      groupCount.id = `g${i}`;
-      groupCount.innerText = '0';
-      groupCounts.appendChild(groupCount);
+      const groupSum= document.createElement('div');
+      groupSum.classList.add('label');
+      groupSum.style.background = colors[i];
+      groupSum.id = `g${i}`;
+      groupSum.innerText = '0';
+      groupSums.appendChild(groupSum);
     }
 
     const gridSize = 17;
